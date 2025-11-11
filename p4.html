@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETSTREAM - the system</title>
+    <link rel="icon" href="clapperboard.png" type="image/x-icon">
+    <style>
+        :root {
+            --primary: #e50914;
+            --secondary: #f40612;
+            --dark: #141414;
+            --light: #ffffff;
+            --gray: #8c8c8c;
+            --light-dark: #2c2c2c;
+            --success: #28a745;
+            --warning: #ffc107;
+            --gold: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            background: var(--dark);
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: right ;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .logo-icon {
+            font-size: 32px;
+            color: var(--primary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--primary);
+            background: rgba(229, 9, 20, 0.1);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray);
+            color: var(--light);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .deals-hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 5%;
+            text-align: right;
+        }
+        
+        .deals-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--light);
+        }
+        
+        .deals-hero p {
+            font-size: 1.5rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        /* Filter Section */
+        .filters {
+            padding: 30px 5%;
+            background: var(--light-dark);
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: var(--dark);
+            color: var(--light);
+            border: 1px solid var(--gray);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        /* Deals Section */
+        .deals-section {
+            padding: 40px 5%;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+        
+        .deals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .deal-card {
+            background: var(--light-dark);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .deal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .deal-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .deal-badge.popular {
+            background: var(--gold);
+            color: var(--dark);
+        }
+        
+        .deal-badge.new {
+            background: var(--success);
+        }
+        
+        .deal-img {
+            height: 200px;
+            background-size: cover;
+            background-position: right;
+            position: relative;
+        }
+        
+        .deal-content {
+            padding: 20px;
+        }
+        
+        .deal-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+        
+        .deal-description {
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .deal-price {
+            display: flex;
+            align-items: right ;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--light);
+        }
+        
+        .original-price {
+            font-size: 1rem;
+            text-decoration: line-through;
+            color: var(--gray);
+        }
+        
+        .discount {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .deal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .deal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .order-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .order-btn:hover {
+            background: var(--secondary);
+        }
+        
+        .details-btn {
+            background: transparent;
+            border: 1px solid var(--gray);
+            color: var(--light);
+        }
+        
+        .details-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Quick Order Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: var(--light-dark);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            padding: 30px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .modal-header {
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .order-summary {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .delivery-info {
+            margin-bottom: 20px;
+        }
+        
+        .delivery-info h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 4px;
+            border: 1px solid var(--gray);
+            background: var(--dark);
+            color: var(--light);
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-actions button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .confirm-order {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .confirm-order:hover {
+            background: var(--secondary);
+        }
+        
+        .cancel-order {
+            background: transparent;
+            border: 1px solid var(--gray);
+            color: var(--light);
+        }
+        
+        .cancel-order:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--light-dark);
+            padding: 40px 5%;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--light);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--dark);
+            border-radius: 50%;
+            color: var(--light);
+            transition: background 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray);
+            color: var(--gray);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .deals-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .deals-hero p {
+                font-size: 1.2rem;
+            }
+            
+            .deals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon"><i class="clapperboard.png"></i></div>
+            <h1><p style="color: rgb(243, 8, 8);">NET<p style="color: rgb(255, 255, 255);">STREAM</p></h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="2.html">Ahabanza</a></li>
+                <li><a href=".html">Action</a></li>
+                <li><a href="p2.html">horror</a></li>
+                <li><a href="help.html">indian</a></li>
+            </ul>
+        </nav>        
+    </header>
+    <!-- movie screen  -->
+    <section class="deals-section">
+        <h2 class="section-title">the system</h2>
+        <div class="deals-grid">
+             <div class="food-card">
+                <h4>yerekeye</h4>
+                <p>The system ni film yakinwe numwirabura agera muri gereza bagashaka kumufata nabi ark yihagararaho haba haberamo imirwano akayijyamo agatsinda urarusanzwe ayoboye aho ni film nziza yinya meric niba ihaka kuyireba ni saw cyane ni film yakozwe na rocky kimomo</p>                    
+         </div><IFRAME SRC="https://hglink.to/e/mdr5od1s5t1s" FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=870 HEIGHT=760 allowfullscreen></IFRAME>
+            </div>
+            </section>       
